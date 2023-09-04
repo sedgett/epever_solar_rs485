@@ -1,0 +1,25 @@
+// See docs for GoogleForm library
+//trick for extracting entryIds is to create a "pre-populated form" in the google interface
+
+#define YOUR_FORM_URL "XXX"
+
+#define ENTRY1 "entry.123456"
+#define ENTRY2 "entry.123456"
+#define ENTRY3 "entry.123456"
+#define ENTRY4 "entry.123456"
+#define ENTRY5 "entry.123456"
+#define ENTRY6 "entry.123456"
+#define ENTRY7 "entry.123456"
+#define ENTRY8 "entry.123456"
+#define ENTRY9 "entry.123456"
+#define ENTRY10 "entry.123456"
+#define ENTRY11 "entry.123456"
+#define ENTRY12 "entry.123456"
+#define ENTRY13 "entry.123456"
+#define ENTRY14 "entry.123456"
+#define ENTRY15 "entry.123456"
+#define ENTRY16 "entry.123456"
+#define ENTRY17 "entry.123456"
+#define ENTRY18 "entry.123456"
+#define ENTRY19 "entry.123456"
+#define ENTRY20 "entry.123456"
