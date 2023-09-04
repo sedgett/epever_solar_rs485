@@ -7,6 +7,8 @@ My camper van has an EPEVER solar controller and I wanted to collect the data to
 I am a fan of the ESP32 line of uC mostly because of the built-in Wifi and Bluetooth chips.   I went searching for a dev board that also had a RS485 chip and came across the LilyGo T-CAN485.
 https://www.lilygo.cc/products/t-can485
 
+![Product Image](https://www.lilygo.cc/cdn/shop/products/Lilygo_6.jpg)
+
 ## Wiring
 I made a custom cable using some cat6 I had lying around.    I expect you could also cut the end off of an ethernet cable.  The pinout on the Epever (in the manual) has 2 pins for each signal.    I used one of the grounds for power and one of the grounds connected to the RS485 input.  This is to ensure no grounding issues when powered off of USB for testing/programing.
 
