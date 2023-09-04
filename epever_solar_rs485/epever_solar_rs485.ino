@@ -126,19 +126,23 @@ void setup()
 
   if (bootCount != 0) //not first boot. first boot lets the loop run
   {
-
+    bootCount++; //increment boot count
+    do_send_data();
+  }
+  else{
+    bootCount++; //increment boot count
+  }
+}
+void do_send_data()
+{
     node.begin(1, Serial485); //enable Modbus mode
       
     if (connect_wifi())
     {
       processsolardata();
-      goto_sleep();
     }
-  }
-
-  bootCount++; //increment boot count
+    goto_sleep();
 }
-
 void goto_sleep()
 {
     esp_sleep_enable_timer_wakeup(TIME_TO_SLEEP * uS_TO_S_FACTOR);
@@ -158,22 +162,22 @@ uint16_t  getregister(int reg)
       //*most* registers just need a "/ 100.0"
       //status registers need a bit mask.  Values are multiplied by 100 so later on we can simply /100
       //we don't /100 now because passing and printing ints are better then floats in Arduino libraries
-
+     
+     uint16_t regdata = node.getResponseBuffer(0);
      switch (reg)
      {
       case CE_STATUS_:
-        //return ((node.getResponseBuffer(0) & 0x000C) >> 2) * 100;  // mask bits 3 and for and move to the right
-        return (node.getResponseBuffer(0));  // still debugging correct bitmask, doesn't lineup to documentation
+        return ((regdata & 0b0000000000001100 ) >> 2) * 100;  // mask bits 3 and for and move to the right
+        //return (node.getResponseBuffer(0));  // still debugging correct bitmask, doesn't lineup to documentation
         break;
       case BT_STATUS_:
-        //return (node.getResponseBuffer(0) & 0x000F); // * 100;
-        return (node.getResponseBuffer(0)); // still debugging correct bitmask, doesn't lineup to documentation
+        return ((regdata) & 0b1111)*100; // still debugging correct bitmask, doesn't lineup to documentation
         break;
       case DE_STATUS_:
-        return (node.getResponseBuffer(0) & 0x0002) * 100;
+        return (regdata & 0x0002) * 100;
         break;
       default:
-        return node.getResponseBuffer(0);
+        return regdata;
      } //switch
     }
     else
@@ -238,10 +242,10 @@ void loop()
   while (Serial485.available())
     Serial.write(Serial485.read());
 
-  if (millis() > timer1+(60*1000*2))  //2 min idle timer
+  if (millis() > timer1+(60*1000))  //1 min idle timer
   {
     Serial.println("First boot idle timer");
-    goto_sleep();
+    do_send_data();
   }
   
 }

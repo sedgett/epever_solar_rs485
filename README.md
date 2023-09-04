@@ -14,14 +14,21 @@ I made a custom cable using some cat6 I had lying around.    I expect you could 
 
 ## Software
 
-- Scan for available SSIDs
-- If my home or starlink wifi is available, connect to the wifi.
-- Enable the RS485 controller
-- Query 20 registers from the solar controller using the modbus protocol
-- Post the data to a google spreadsheet via an HTTPS post through a Google form (super lightweight on the uC side compared to using the sheets API)
-- Set a 15 minute deep-sleep timer on the Real-time clock 
-- Go to deep-sleep mode (turns off everything except the RTC clock)
-- 15 minutes later it powers back on and repeats.
+- If the first boot (power on or reset button)
+  - Go into pass thru mode between the serial port and the RS485 port
+  - Check a timer var against millis() for a 1 min idle timer
+  - Reset idle timer if you receive data onthe serial interface
+  - If the idle timeout occure, proceed as if 2nd boot
+  - This mode enables you to use the epever software.  As logn as you start the software in te first minute it will stay in pass thrumode.
+- If second+ boot
+  - Scan for available SSIDs
+  - If my home or starlink wifi is available, connect to the wifi.
+  - Enable the RS485 controller
+  - Query 20 registers from the solar controller using the modbus protocol
+  - Post the data to a google spreadsheet via an HTTPS post through a Google form (super lightweight on the uC side compared to using the sheets API)
+  - Set a 15 minute deep-sleep timer on the Real-time clock 
+  - Go to deep-sleep mode (turns off everything except the RTC clock)
+  - 15 minutes later it powers back on and repeats.
 
 ## Dashboard
 I have done a few projects previously using a Google sheet to store data and a Looker datastudio report to display the data.   I do like free tools.
@@ -29,13 +36,15 @@ This software uses the GoogleFormPost library to send the data to a Googler Shee
 
 I created a report that shows the last reported data plus a historical view of the Solar and Battery voltages.    For anyone trying to duplicate, the trick for showing "last received" data in a time-series data set is to create a blend with the same data set on either side of a left hand join.   Add a calculated field that is the MAX() of your date field and join that with the date field on the other side of the join.
 
+!['Screenshot'](https://blogger.googleusercontent.com/img/a/AVvXsEj4I364D8XyvJ9mX4pmIAh33t7-ywZr6Ikiy3BnnHMzMhPQxY9e1YHhxzytFjqDBqJBVA0TO82G5vivzDLqK3mWbbW46XuR1wfc_hlcihp29NRvzoDpJLUBdZO5QVfUq3xDENCFMsV9BpNvzBrjzR6yHCgp8DNxyGEwgOAqk1WmhYx3SQZ-apKmB88D5Gov)
+
 ## Alerting
 One reason I like using Google sheets for this type of data storage is you can write App Script functions that can be triggers based on time or when data is posted to the spreadsheet.
 
 I created an appscript function that triggers on a form post to the spreadsheet and acts on the battery voltage.
 Write the voltage to a persistent script property - this allows you to access the results from other functions in the same script.
 Check if the voltage is < 13.0
-Call the prowlapp.com API to send an alert to my mobile phone.    (This could have been an email, but I wanted the mobile alert)
+Call the <prowlapp.com> API to send an alert to my mobile phone.    (This could have been an email, but I wanted the mobile alert)
 ```
 function onFormSubmit(e) {
   
